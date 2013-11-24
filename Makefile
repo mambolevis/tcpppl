@@ -13,8 +13,7 @@ CXX = clang++
 # Subsystems that have compilable libraries
 #
 subsys = 
-#lib = lib/lib_tcpl.so.0.0
-lib =
+lib = lib/lib_tcpl.so.0.0
 
 # Get list of all heads, sources and objects. Each source (%.cc) whould have
 # an object file except programs listed in PROGS
