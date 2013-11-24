@@ -9,7 +9,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <string>
 
 #include "interface/5.9.h"
 
@@ -17,7 +16,6 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::ofstream;
-using std::string;
 
 int main(int argc, char *argv[])
 {
