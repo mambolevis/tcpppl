@@ -4,7 +4,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 //
-// (∗1.5)   Redo §X.5[5], storing several (name,age) pairs in a class. Doing the
+// (*1.5)   Redo §X.5[5], storing several (name,age) pairs in a class. Doing the
 //          reading and writing using your own >> and << operators.
 
 #include <iostream>
