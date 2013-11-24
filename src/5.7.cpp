@@ -12,30 +12,15 @@
 #include <iostream>
 #include <vector>
 
+#include "interface/estd_vector.h"
+
 using std::cout;
 using std::endl;
 using std::setw;
 using std::sort;
 using std::vector;
 
-std::ostream &operator <<(std::ostream &os, const vector<int> &v)
-{
-    auto *back = &v.back();
-    for(const auto &x:v)
-    {
-        os << x;
-
-        if (&x != back)
-            os << ' ';
-    }
-
-    return os;
-}
-
-void sort(vector<int> &v)
-{
-    sort(v.begin(), v.end());
-}
+using namespace estd;
 
 int main(int argc, char *argv[])
 {
