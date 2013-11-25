@@ -7,9 +7,10 @@
 #include <future>
 #include <iostream>
 #include <memory>
-#include <numeric>
 #include <thread>
 #include <vector>
+
+#include "interface/tools.h"
 
 using std::cout;
 using std::endl;
@@ -18,13 +19,6 @@ using std::packaged_task;
 using std::thread;
 using std::unique_ptr;
 using std::vector;
-
-template<typename T>
-    T sum(const T *from, const T &number_of_elements, T init)
-        // calculate a sum of consequent elements
-    {
-        return std::accumulate(from, from + number_of_elements, init);
-    }
 
 template<typename Fn, typename R>
     class Task
@@ -97,7 +91,7 @@ int main(int argc, char *argv[])
     //
     vector<ITaskP> threads;
     for(int i {0}; threads_num > i; ++i)
-        threads.push_back(ITaskP{new ITask{sum}});
+        threads.push_back(ITaskP{new ITask{tools::sum}});
 
     // run threads
     //
