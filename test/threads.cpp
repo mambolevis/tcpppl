@@ -10,6 +10,8 @@
 #include <queue>
 #include <thread>
 
+#include "interface/print.h"
+
 using std::condition_variable;
 using std::cout;
 using std::endl;
@@ -20,31 +22,11 @@ using std::unique_lock;
 
 namespace test
 {
+    using tools::print;
+
     queue<int> mqueue; // FIFO for messages exchange between two threads
     mutex mmutex;
     condition_variable mcondition;
-
-    template<typename T>
-        void nonlocking_print(const T &value)
-        {
-            cout << value << endl;
-        }
-
-    template<typename T, typename... Tail>
-        void nonlocking_print(const T &value, Tail... tail)
-        {
-            cout << value << ' ';
-            nonlocking_print(tail...);
-        }
-
-    mutex cout_mutex;
-    template<typename T, typename... Tail>
-        void print(const T &value, Tail... tail)
-            // thread safe print to cout: acquire lock and start print
-        {
-            unique_lock<mutex> lock(cout_mutex);
-            nonlocking_print(value, tail...);
-        }
 
     void producer()
     {
