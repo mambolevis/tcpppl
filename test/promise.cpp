@@ -3,6 +3,12 @@
 //
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
+//
+// promise and future represents one-way connection between two threads:
+// a producer uses promise to put value/exception into a pipe, a consumer
+// uses future to receive value/exception from the pipe. Future automatically
+// sleeps consumer thread and waits until pipe is filled by producer: no
+// need for low level use of locks, mutexes or conditional variables.
 
 #include <chrono>
 #include <functional>
@@ -29,6 +35,9 @@ namespace test
                 using tools::print;
 
                 print("consumer started and waits for future");
+                // consumer thread will automatically go to sleep until the
+                // pipe is filled with data/exception
+                //
                 auto x = _future.get();
                 print("consumer received:", x);
             }
@@ -55,7 +64,12 @@ namespace test
                 namespace chrono = std::chrono;
 
                 print("producer started and goes to sleep");
+                // emulate value calculation to let consumer wait for data
+                //
                 this_thread::sleep_for(chrono::milliseconds(_milliseconds));
+
+                // send data to the consumer
+                //
                 _promise.set_value(500);
             }
 
@@ -75,6 +89,7 @@ int main(int argc, char *argv[])
     };
 
     // let all threads finish their job
+    //
     for(auto &t:threads)
         t.join();
 

@@ -3,6 +3,10 @@
 //
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
+//
+// Low-level communication b/w threads can be organized through locks on
+// mutexes (mutual exclusion objects) and conditional variables thay are
+// used to synchronize between threads.
 
 #include <condition_variable>
 #include <iostream>
