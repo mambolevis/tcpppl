@@ -17,26 +17,24 @@ using std::setw;
 using IVector = std::vector<int>;
 using Function = std::function<int()>;
 
+template<typename D>
+    Function dice(const D &distribution)
+    {
+        using generator = std::default_random_engine;
+
+        generator g(std::chrono::system_clock::now().time_since_epoch().count());
+
+        return std::bind(distribution, g);    // let dice act as a function
+    }
+
 Function uniform_dice(const int &max=5)
 {
-    using generator = std::default_random_engine;
-    using distribution = std::uniform_int_distribution<int>;
-
-    generator g(std::chrono::system_clock::now().time_since_epoch().count());
-    distribution d{0, max};
-
-    return std::bind(d, g);    // let dice act as a function
+    return dice(std::uniform_int_distribution<int>{0, max});
 }
 
 Function normal_dice(const int &mean=2)
 {
-    using generator = std::default_random_engine;
-    using distribution = std::poisson_distribution<int>;
-
-    generator g(std::chrono::system_clock::now().time_since_epoch().count());
-    distribution d{mean};
-
-    return std::bind(d, g);    // let dice act as a function
+    return dice(std::poisson_distribution<int>{mean});
 }
 
 IVector histogram(Function dice, const int &max=5)
@@ -62,7 +60,7 @@ std::ostream &operator <<(std::ostream &os, const IVector &v)
     {
         os << setw(2) << (&x - &*v.begin()) + 1 << "| ";
         for(int j {1}, max {x / 2}; max > j; ++j)
-            cout << '#';
+            cout << '*';
 
         os << endl;
     }
@@ -76,5 +74,5 @@ int main(int argc, char *argv[])
     cout << histogram(uniform_dice(9), 9) << endl;
 
     cout << "-- normal dice" << endl;
-    cout << histogram(normal_dice(3), 10) << endl;
+    cout << histogram(normal_dice(4), 9) << endl;
 }
