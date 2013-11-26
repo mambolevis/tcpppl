@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
 {
     int j = 0;
 
-    tools::Timer t; // start timer
-    for(int i {0}; 100000000 > i; ++i)
+    tools::MicroTimer t; // start timer
+    for(int i {0}; 100000 > i; ++i)
         j += i * i;
     cout << t << endl; // print duration but let timer run
 

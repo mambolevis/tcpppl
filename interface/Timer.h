@@ -8,36 +8,75 @@
 #define TIMER
 
 #include <chrono>
-//#include <iosfwd>
 #include <memory>
+
+#include "interface/estd_chrono.h"
 
 namespace tools
 {
-    class Timer
-    {
-        public:
-            // automatically start timer
+    template<typename D=std::chrono::microseconds>
+        class Timer
+            // measure duration of code block
             //
-            Timer():
-                _time_point {std::chrono::system_clock::now()}
-            {}
+            // usage:
+            //      MicroTimer t;
+            //      // ... some code
+            //      std::chrono::microseconds us {t.duration()};
+        {
+            private:
+                using system_clock = std::chrono::system_clock;
 
-            // stop timer
-            //
-            void stop();
+            public:
+                // automatically start timer
+                //
+                Timer():
+                    _time_point{system_clock::now()}
+                {}
 
-            // number of seconds passed
-            //
-            operator unsigned long() const;
+                // Prevent copying
+                //
+                Timer(const Timer &) = delete;
+                Timer &operator =(const Timer &) = delete;
 
-        private:
-            std::chrono::system_clock::time_point _time_point;
-            std::unique_ptr<std::chrono::milliseconds> _duration;
-    };
+                void stop()
+                    // stop timer and keep duration in D units
+                {
+                    if (!_duration)
+                        _duration.reset(new D{duration()});
+                }
+
+                D duration() const
+                    // calculated elapsed time if timer is still running
+                    // otherwise return duration
+                {
+                    if (!_duration)
+                        return std::chrono::duration_cast<D>(
+                                system_clock::now() - _time_point);
+                    else
+                        return *_duration;
+                }
+
+            private:
+                std::chrono::system_clock::time_point _time_point;
+                std::unique_ptr<D> _duration;
+        };
 
     // standard printing
     //
-    std::ostream &operator <<(std::ostream &, const Timer &);
+    using estd::operator<<;
+
+    template<typename D>
+        std::ostream &operator <<(std::ostream &os, const Timer<D> &t)
+            // estd chrono knows how to print different durations
+        {
+            return os << t.duration();
+        }
+
+    // aliases to useful timers
+    //
+    using MilliTimer = Timer<std::chrono::milliseconds>;
+    using MicroTimer = Timer<std::chrono::microseconds>;
+    using NanoTimer = Timer<std::chrono::nanoseconds>;
 }
 
 #endif
