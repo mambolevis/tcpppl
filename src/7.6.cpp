@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <iostream>
 #include <typeinfo>
+#include <string>
 
 using std::cout;
 using std::endl;
@@ -20,6 +21,20 @@ using std::setw;
 
 template<typename T>
     struct Info{};
+
+template<typename T>
+    std::string type_name(const Info<T> &type)
+    {
+        int status;
+        char *name {abi::__cxa_demangle(typeid(T).name(),
+                                                  NULL,
+                                                  NULL,
+                                                  &status)};
+        std::string name_ {name};
+        std::free(name);
+
+        return name_;
+    }
 
 template<typename T>
     std::ostream &operator<<(std::ostream &os, const Info<T> &type)
@@ -32,14 +47,7 @@ template<typename T>
         // The procedure below is how to demangle the name and get back
         // user-friendly name printed.
         //
-        int status;
-        char *name {abi::__cxa_demangle(typeid(T).name(),
-                                                  NULL,
-                                                  NULL,
-                                                  &status)};
-        os << setw(15) << name << ": " << setw(2) << sizeof(T) << " B";
-
-        std::free(name);    // don't forget to cleanup memory
+        os << setw(15) << type_name(type) << ": " << setw(2) << sizeof(T) << " B";
 
         return os;
     }
