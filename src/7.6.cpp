@@ -8,33 +8,16 @@
 //          few pointer types, and a few enumerations of your choice. Use the
 //          sizeof operator.
 
-#include <cxxabi.h> // for demangle
-
 #include <iomanip>
 #include <iostream>
-#include <typeinfo>
-#include <string>
+
+#include "interface/7.6.h"
 
 using std::cout;
 using std::endl;
 using std::setw;
 
-template<typename T>
-    struct Info{};
-
-template<typename T>
-    std::string type_name(const Info<T> &type)
-    {
-        int status;
-        char *name {abi::__cxa_demangle(typeid(T).name(),
-                                                  NULL,
-                                                  NULL,
-                                                  &status)};
-        std::string name_ {name};
-        std::free(name);
-
-        return name_;
-    }
+using ex_7_6::Info;
 
 template<typename T>
     std::ostream &operator<<(std::ostream &os, const Info<T> &type)
@@ -47,7 +30,8 @@ template<typename T>
         // The procedure below is how to demangle the name and get back
         // user-friendly name printed.
         //
-        os << setw(15) << type_name(type) << ": " << setw(2) << sizeof(T) << " B";
+        os << setw(15) << ex_7_6::type_name(type) << ": " <<
+            setw(2) << sizeof(T) << " B";
 
         return os;
     }
