@@ -12,21 +12,34 @@
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 using std::cout;
 using std::endl;
+using std::ostringstream;
 using std::setbase;
+using std::setw;
 using std::string;
 
 class Generator
+    // generate values in range [from, to)
+    //
+    // similar to Python generator for use:
+    //      for(const auto &x:Generator{'a', 'z' + 1})
+    //          cout << x << endl;
+    //
 {
     public:
         class Iter
+            // used in a range-based for loop
+            //
+            // minimal interface implementation
+            //
         {
             public:
                 Iter(const char &value):
-                    _value(value)
+                    _value{value}
                 {}
 
                 char operator *() const
@@ -39,14 +52,10 @@ class Generator
                     return _value != iter._value;
                 }
 
-                bool operator==(const Iter &iter) const
-                {
-                    return _value == iter._value;
-                }
-
                 Iter &operator ++()
                 {
                     ++_value;
+
                     return *this;
                 }
 
@@ -55,7 +64,8 @@ class Generator
         };
 
         Generator(const char &from, const char &to, const char &max=0):
-            _from{from}, _to((max && (to - from) > max) ? (from + max) : to)
+            _from{from},
+            _to((max && (to - from) > max) ? (from + max) : to)
         {}
 
         Iter begin() const
@@ -73,17 +83,74 @@ class Generator
         Iter _to;
 };
 
+// print numbers in base
+//
+enum class Base { dec=10, oct=8, hex=16 };
+
+std::ostream &operator <<(std::ostream &os, const Base &base)
+    // print base as string rather than number
+    //
+{
+    switch(base)
+    {
+        case Base::dec:
+            os << "dec";
+            break;
+        case Base::oct:
+            os << "oct";
+            break;
+        default:
+            os << "hex";
+            break;
+    }
+
+    return os;
+}
+
+string bold(const string &s)
+    // print any string in bold
+    //
+{
+    return string("\033[1;1m") + s + "\033[0m";
+}
+
+template<typename T>
+    string bold(const T &t)
+        // make any printable object bold
+        //
+    {
+        ostringstream os;
+        os << t;
+
+        return bold(os.str());
+    }
+
 void print(std::string title,
            const char &from,
            const char &to,
-           const int &base=10)
+           const Base &base=Base::dec)
+    // nice print of a sequence of characters with corresponding ASCII code
+    // in specific base
+    //
 {
-    cout << "-- " << title << " (base:" << base << ')' << endl;
+    cout << "-- " << title << " (base: " << bold(base) << ')' << endl;
+    int i {0};
     for(const auto &x:Generator{from, to})
     {
-        cout << std::setbase(base);
-        cout << static_cast<int>(x) << ":" << x << ' ';
+        cout << std::setbase(static_cast<int>(base));
+        cout << setw(3) << static_cast<int>(x) << ":" << bold(x) << ' ';
+       
+        // organize print in N columns
+        //
+        if (!(++i % 10))
+           cout << endl; 
     }
+
+    // extra endl for the last column if needed
+    //
+    if (i % 10)
+        cout << endl;
+
     cout << endl;
 }
 
@@ -93,7 +160,7 @@ int main(int, char *[])
     print("numbers", '0', '9' + 1);
     print("printable characters", 32, 127);
 
-    print("alphabet", 'a', 'z' + 1, 16);
-    print("numbers", '0', '9' + 1, 16);
-    print("printable characters", 32, 127, 16);
+    print("alphabet", 'a', 'z' + 1, Base::hex);
+    print("numbers", '0', '9' + 1, Base::hex);
+    print("printable characters", 32, 127, Base::hex);
 }
