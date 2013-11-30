@@ -11,11 +11,13 @@
 #include <iostream>
 
 #include "interface/7.6.h"
+#include "interface/8.4.h"
 
 using std::cout;
 using std::endl;
 
 class Test
+    // Monitor copy/move construction/assignment calls
 {
     public:
         // default constructor
@@ -85,6 +87,7 @@ class Test
 
 template<typename T>
     void swap(T *&v1, T *&v2)
+        // swap pointers rather than values pointed to
     {
         T *tmp {v1};
         v1 = v2;
@@ -93,6 +96,8 @@ template<typename T>
 
 template<typename T>
     void swap(T &v1, T &v2)
+        // move values between v1 and v2: way better than copying objects
+        // since these can be large
     {
         using std::move;
 
@@ -103,38 +108,47 @@ template<typename T>
 
 template<typename T>
     void run()
+        // test swap with different types
     {
         using ex_7_6::Info;
         using ex_7_6::type_name;
+        using ex_8_4::tools::cast;
 
-        cout << "construct " << type_name(Info<T>{}) << endl;
-        T v1 {1};
+        cout << "-- work with " << type_name(Info<T>{}) << endl;
+        // construct two objects
+        T v1 {98};
+        T v2 {99};
+
         cout << "v1: " << v1 << endl;
-
-        cout << "construct " << type_name(Info<T>{}) << endl;
-        T v2 {2};
         cout << "v2: " << v2 << endl;
+        cout << endl;
 
-        cout << "-- swap v1 and v2" << endl;
+        // swap two objects 
+        cout << "> swap v1 and v2" << endl;
         swap(v1, v2);
         cout << "v1: " << v1 << endl;
         cout << "v2: " << v2 << endl;
+        cout << endl;
 
-        cout << "-- swap &v1 and &v2" << endl;
+        // swap two pointers to objects
+        cout << "> swap &v1 and &v2" << endl;
         T *p1 {&v1};
         T *p2 {&v2};
-        cout << "p1: " << p1 << ' ' << *p1 << endl;
-        cout << "p2: " << p2 << ' ' << *p2 << endl;
+        cout << "+ before" << endl;
+        // pointers to char are automatically dereferenced. cast(...) will
+        // make C++ print it as pointer
+        cout << " p1: " << cast(p1) << ' ' << *p1 << endl;
+        cout << " p2: " << cast(p2) << ' ' << *p2 << endl;
         swap(p1, p2);
-        cout << "p1: " << p1 << ' ' << *p1 << endl;
-        cout << "p2: " << p2 << ' ' << *p2 << endl;
+        cout << "+ after" << endl;
+        cout << " p1: " << cast(p1) << ' ' << *p1 << endl;
+        cout << " p2: " << cast(p2) << ' ' << *p2 << endl;
+        cout << endl;
     }
 
 int main(int, char *[])
 {
+    run<char>();
     run<int>();
-    
-    cout << endl;
-
     run<Test>();
 }
