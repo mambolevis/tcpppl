@@ -7,7 +7,11 @@
 #ifndef EXERCISE_8_4
 #define EXERCISE_8_4
 
+#include <chrono>
+#include <cmath>
 #include <iostream>
+#include <initializer_list>
+#include <random>
 
 namespace ex_8_4
 {
