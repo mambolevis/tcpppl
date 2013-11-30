@@ -19,12 +19,14 @@ namespace ex_8_4
     {
         template<typename T>
             void *cast(T *p)
+                // ostream automatically dereferences a pointer to char
             {
                 return static_cast<void *>(p);
             }
 
         template<typename T>
             void *cast(const T *p)
+                // ostream automatically dereferences a pointer to const char
             {
                 return static_cast<void *>(const_cast<T *>(p));
             }
@@ -32,6 +34,8 @@ namespace ex_8_4
 
     template<typename T>
         void run(std::initializer_list<T> &&list)
+            // calculate number of elements between to pointers to arbitrary
+            // elements of the same array
         {
             using std::cout;
             using std::endl;
