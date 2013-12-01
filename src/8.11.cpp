@@ -9,6 +9,7 @@
 //      Don’t print a word twice. Modify the program to sort the words before
 //      printing them.
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <set>
@@ -30,13 +31,24 @@ string lower(string str)
     return str;
 }
 
+std::ostream &operator <<(std::ostream &os, const vector<string> &words)
+{
+    for(const auto &x:words)
+        os << x << endl;
+
+    return os;
+}
+
 int main(int, char *[])
 {
     // store unique words in the order they are typed in
     vector<string> words;
 
     {
-        set<string> unique_words; // keep track of unique words
+        // keep track of unique words
+        // set uses binary search which is way faster than linear
+        // search trough vector
+        set<string> unique_words;
 
         cout << "Input words. Type 'quit' to exit." << endl;
         for(string word; cin >> word; )
@@ -57,6 +69,10 @@ int main(int, char *[])
 
     // print typed in words
     cout << "-- you input words" << endl;
-    for(const auto &x:words)
-        cout << x << endl;
+    cout << words << endl;
+
+    // sort and print again
+    std::sort(words.begin(), words.end());
+    cout << "-- sorted words" << endl;
+    cout << words << endl;
 }
