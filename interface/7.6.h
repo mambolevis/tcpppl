@@ -29,6 +29,19 @@ namespace ex_7_6
 
             return name_;
         }
+
+    namespace print
+    {
+        namespace size
+        {
+            template<typename T>
+                std::ostream &operator<<(std::ostream &os, const Info<T> &type)
+                    // automatically print name and size of the type
+                {
+                    return os << type_name(type) << ": " << sizeof(T) << " B";
+                }
+        }
+    }
 }
 
 #endif
