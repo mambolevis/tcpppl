@@ -93,6 +93,7 @@ ${progs}: bin/tcpl_%: src/%.cpp ${lib}
 cleanbin:
 ifneq ($(strip ${tests}),)
 	rm -f ./bin/test_*
+	rm -f ./bin/tcpl_*
 endif
 
 clean: cleanbin
