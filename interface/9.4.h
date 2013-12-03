@@ -53,8 +53,28 @@ namespace ex_9_4
         unsigned char day;
     };
 
+    // supported formats
+    //
+    //  --------------------------------------------
+    //  format          example         result
+    //  --------------------------------------------
+    //  d/m/y           3/4/2013        Apr 3, 2013
+    //  d.m.y           5.Jan.2013      Jan 5, 2013
+    //  --------------------------------------------
+    //
+    //  Month can be typed in any supported form: see above
+    //
     std::istream &operator >>(std::istream &is, Date &);
     std::ostream &operator <<(std::ostream &os, const Date &);
+
+    bool operator ==(const Date &, const Date &);
+    bool operator !=(const Date &d1, const Date &d2) { return !(d1 == d2); }
+
+    namespace unit_test
+    {
+        void test_date_is();
+        void test_date_os();
+    }
 }
 
 #endif
