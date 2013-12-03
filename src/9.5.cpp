@@ -14,6 +14,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
+#include <utility>
 
 enum class Season : unsigned char {spring, summer, autumn, winter};
 
@@ -74,6 +76,28 @@ std::ostream &operator <<(std::ostream &os, const Season &s)
     return os;
 }
 
+std::istream &operator >>(std::istream &is, Season &s)
+{
+    std::string value;
+    is >> value;
+
+    if ("spring" == value)
+        s = Season::spring;
+    else if ("summer" == value)
+        s = Season::summer;
+    else if ("autumn" == value)
+        s = Season::autumn;
+    else if ("winter" == value)
+        s = Season::winter;
+    else
+    {
+        // unsupported season
+        is.setstate(std::ios::failbit);
+    }
+
+    return is;
+}
+
 namespace unit_test
 {
     void increment_prefix();
@@ -81,6 +105,7 @@ namespace unit_test
     void decrement_prefix();
     void decrement_suffix();
     void ostream();
+    void istream();
 }
 
 int main(int, char *[])
@@ -90,6 +115,7 @@ int main(int, char *[])
     unit_test::decrement_prefix();
     unit_test::decrement_suffix();
     unit_test::ostream();
+    unit_test::istream();
 }
 
 namespace unit_test
@@ -175,20 +201,38 @@ namespace unit_test
 
     void ostream()
     {
-        std::ostringstream os;
+        std::vector<std::pair<Season, std::string>> tests {
+            {Season::spring, "spring"},
+            {Season::summer, "summer"},
+            {Season::autumn, "autumn"},
+            {Season::winter, "winter"}
+        };
 
-        Season s {Season::spring};
+        for(const auto &t:tests)
+        {
+            std::ostringstream os;
+            os << t.first;
+            if (os.str() != t.second)
+                cerr << "failed to ostream " << t.second << endl;
+        }
+    }
 
-        os << s++;
-        if (!("spring" == os.str())) cerr << "spring is expected" << endl;
+    void istream()
+    {
+        std::vector<std::pair<Season, std::string>> tests {
+            {Season::spring, "spring"},
+            {Season::summer, "summer"},
+            {Season::autumn, "autumn"},
+            {Season::winter, "winter"}
+        };
 
-        os.str(""); os << s++;
-        if (!("summer" == os.str())) cerr << "summer is expected" << endl;
-
-        os.str(""); os << s++;
-        if (!("autumn" == os.str())) cerr << "autumn is expected" << endl;
-
-        os.str(""); os << s++;
-        if (!("winter" == os.str())) cerr << "winter is expected" << endl;
+        for(const auto &t:tests)
+        {
+            std::istringstream is(t.second);
+            Season s;
+            is >> s;
+            if (s != t.first)
+                cerr << "didn't understand " << t.second << endl;
+        }
     }
 }
