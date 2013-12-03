@@ -13,6 +13,7 @@
 //      study, see Chapter 39.
 
 #include <iostream>
+#include <sstream>
 
 enum class Season : unsigned char {spring, summer, autumn, winter};
 
@@ -56,12 +57,30 @@ Season operator --(Season &s, int)
     return tmp;
 }
 
+std::ostream &operator <<(std::ostream &os, const Season &s)
+    // output operator
+{
+    switch(s)
+    {
+        case Season::spring: os << "spring"; break;
+        case Season::summer: os << "summer"; break;
+        case Season::autumn: os << "autumn"; break;
+        case Season::winter: os << "winter"; break;
+
+        // in case someone wants to use invalid season
+        default: os << "undefined"; break;
+    }
+
+    return os;
+}
+
 namespace unit_test
 {
     void increment_prefix();
     void increment_suffix();
     void decrement_prefix();
     void decrement_suffix();
+    void ostream();
 }
 
 int main(int, char *[])
@@ -70,6 +89,7 @@ int main(int, char *[])
     unit_test::increment_suffix();
     unit_test::decrement_prefix();
     unit_test::decrement_suffix();
+    unit_test::ostream();
 }
 
 namespace unit_test
@@ -151,5 +171,24 @@ namespace unit_test
 
         if (!(Season::summer == s--)) cerr << "summer is expected" << endl;;
         if (!(Season::spring == s)) cerr << "spring is expected" << endl;;
+    }
+
+    void ostream()
+    {
+        std::ostringstream os;
+
+        Season s {Season::spring};
+
+        os << s++;
+        if (!("spring" == os.str())) cerr << "spring is expected" << endl;
+
+        os.str(""); os << s++;
+        if (!("summer" == os.str())) cerr << "summer is expected" << endl;
+
+        os.str(""); os << s++;
+        if (!("autumn" == os.str())) cerr << "autumn is expected" << endl;
+
+        os.str(""); os << s++;
+        if (!("winter" == os.str())) cerr << "winter is expected" << endl;
     }
 }
