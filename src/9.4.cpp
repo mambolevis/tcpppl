@@ -26,19 +26,12 @@ int main(int, char *[])
     cout << "Month is pod: " <<  std::is_pod<Month>::value << endl;
     cout << "Date is pod: " <<  std::is_pod<Date>::value << endl;
 
-    ex_9_4::unit_test::test_month_is();
-    ex_9_4::unit_test::test_month_os();
+    unit_test::test_month_is();
+    unit_test::test_month_os();
+    unit_test::test_date_is();
+    unit_test::test_date_os();
 
-    /*
-    try
-    {
-        cout << "input month: ";
-        for(Month m; cin >> m; cout << "input month: ")
-            cout << "your input is: " << m << endl;
-    }
-    catch(const std::runtime_error &e)
-    {
-        cerr << e.what() << endl;
-    }
-    */
+    // Date is pod and can be initialized in a simple way:
+    Date d {2000, Month::aug, 18};
+    cout << d << endl;
 }
