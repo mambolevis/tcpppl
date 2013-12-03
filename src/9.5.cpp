@@ -14,20 +14,44 @@
 
 #include <iostream>
 
-enum class Season : char {spring, summer, autumn, winter};
+enum class Season : unsigned char {spring, summer, autumn, winter};
 
 Season &operator ++(Season &s)
     // prefix increment
 {
-    return s = static_cast<Season>((static_cast<int>(s) + 1) %
-                                   (static_cast<int>(Season::winter) + 1));
+    if (Season::winter == s)
+        s = Season::spring;
+    else
+        s = static_cast<Season>(static_cast<int>(s) + 1);
+
+    return s;
 }
 
 Season operator ++(Season &s, int)
-    // postfix increment
+    // suffix increment
 {
     Season tmp {s};
     ++s;
+
+    return tmp;
+}
+
+Season &operator --(Season &s)
+    // prefix decrement
+{
+    if (Season::spring == s)
+        s = Season::winter;
+    else
+        s = static_cast<Season>(static_cast<int>(s) - 1);
+
+    return s;
+}
+
+Season operator --(Season &s, int)
+    // suffix decrement
+{
+    Season tmp {s};
+    --s;
 
     return tmp;
 }
@@ -36,12 +60,16 @@ namespace unit_test
 {
     void increment_prefix();
     void increment_suffix();
+    void decrement_prefix();
+    void decrement_suffix();
 }
 
 int main(int, char *[])
 {
     unit_test::increment_prefix();
     unit_test::increment_suffix();
+    unit_test::decrement_prefix();
+    unit_test::decrement_suffix();
 }
 
 namespace unit_test
@@ -84,6 +112,44 @@ namespace unit_test
         if (!(Season::winter == s)) cerr << "winter is expected" << endl;;
 
         if (!(Season::winter == s++)) cerr << "winter is expected" << endl;;
+        if (!(Season::spring == s)) cerr << "spring is expected" << endl;;
+    }
+
+    void decrement_prefix()
+    {
+        Season s {Season::spring};
+
+        if (!(Season::spring == s)) cerr << "spring is expected" << endl;;
+        if (!(Season::winter == --s)) cerr << "winter is expected" << endl;;
+
+        if (!(Season::winter == s)) cerr << "winter is expected" << endl;;
+        if (!(Season::autumn == --s)) cerr << "autumn is expected" << endl;;
+
+        if (!(Season::autumn == s)) cerr << "autumn is expected" << endl;;
+        if (!(Season::summer == --s)) cerr << "summer is expected" << endl;;
+
+        if (!(Season::summer == s)) cerr << "summer is expected" << endl;;
+        if (!(Season::spring == --s)) cerr << "spring is expected" << endl;;
+
+        if (!(Season::spring == s)) cerr << "spring is expected" << endl;;
+    }
+
+    void decrement_suffix()
+    {
+        Season s {Season::spring};
+
+        if (!(Season::spring == s)) cerr << "spring is expected" << endl;;
+
+        if (!(Season::spring == s--)) cerr << "spring is expected" << endl;;
+        if (!(Season::winter == s)) cerr << "winter is expected" << endl;;
+
+        if (!(Season::winter == s--)) cerr << "winter is expected" << endl;;
+        if (!(Season::autumn == s)) cerr << "autumn is expected" << endl;;
+
+        if (!(Season::autumn == s--)) cerr << "autumn is expected" << endl;;
+        if (!(Season::summer == s)) cerr << "summer is expected" << endl;;
+
+        if (!(Season::summer == s--)) cerr << "summer is expected" << endl;;
         if (!(Season::spring == s)) cerr << "spring is expected" << endl;;
     }
 }
