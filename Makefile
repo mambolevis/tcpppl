@@ -27,8 +27,8 @@ progs = $(foreach prog,$(wildcard ./src/*.cpp),$(addprefix ./bin/tcpl_,$(patsubs
 objs = $(foreach obj,${srcs},$(addprefix ./obj/,$(patsubst %.cc,%.o,$(notdir ${obj}))))
 
 
-CPPFLAGS += ${debug} -fPIC -pipe -std=c++11 -Wc++11-extensions -Wall -I.
-#LDFLAGS += 
+CPPFLAGS += ${debug} -fPIC -pipe -std=c++11 -Wc++11-extensions -Wall -I. -isystem ${GTEST_DIR}/include -pthread -DGTEST_LINKED_AS_SHARED_LIBRARY=1
+LDFLAGS += -L${GTEST_DIR} -lgtest
 
 # Rules to be always executed: empty ones
 #
