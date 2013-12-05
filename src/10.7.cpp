@@ -14,6 +14,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -26,16 +27,20 @@ using std::ifstream;
 using std::invalid_argument;
 using std::runtime_error;
 using std::string;
+using std::unique_ptr;
 
 int main(int argc, char *argv[])
 try
 {
+    using namespace ex_10_7;
+
     if (2 > argc)
         throw invalid_argument(string("usage: ") + argv[0] + " input [input]");
 
     // process over each input file
     for(int i {1}; argc > i; ++i)
     {
+        unique_ptr<Processor> processor {new Highlighter{}};
         cout << "-- file " << argv[i] << endl;
 
         ifstream is(argv[i]);
@@ -46,8 +51,8 @@ try
             continue;
         }
 
-        ex_10_7::Highlighter processor;
-        processor.run(is, cout);
+        processor->run(is, cout);
+        
     }
 }
 catch(const std::exception &e)

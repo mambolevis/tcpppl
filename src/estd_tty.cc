@@ -52,5 +52,5 @@ Escape::operator std::string() const
 
 std::ostream &estd::tty::operator <<(std::ostream &os, const Escape &e)
 {
-            return os << static_cast<std::string>(e);
+    return os << static_cast<std::string>(e);
 }
