@@ -36,3 +36,23 @@ library. The instructions for OSX are below.
     5. Go to tcppl project and compile it with Makefile:
 
         for _opt in lib prog test; do make $_opt -j8; done
+
+
+FOLDER STRUCTURE
+================
+
+Each exercise has implemented as a unique executable src/<EXERCISE>.cpp, e.g.
+for the exercise 7.6 the executable is src/7.6.cpp. The source file contains
+the exercise description.
+
+Some parts of the exercises are either reusable, can be even referenced from
+another exercises, or just a good idea to keep OO concepts separate. In such
+cases accompaniying interface can be found in interface/<EXERCISE>.h,
+while implementation is available in src/<EXERCISE>.cc.
+    
+In the above example of exercise 7.6 additional two files exist:
+
+    interface/7.6.h 
+    src/7.6.cc
+
+test folder contains short programs with tests of some code.
