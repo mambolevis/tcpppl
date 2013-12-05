@@ -36,8 +36,8 @@ try
     if (!is)
         throw runtime_error(string("failed to open file: ") + argv[1]);
 
-    ex_10_7::Remover remover;
-    remover.run(is, std::cout);
+    ex_10_7::Highlighter processor;
+    processor.run(is, std::cout);
 }
 catch(const std::exception &e)
 {
