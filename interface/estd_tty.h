@@ -39,10 +39,7 @@ namespace estd
                 const Typeface _typeface;
         };
 
-        std::ostream &operator <<(std::ostream &os, const Escape &e)
-        {
-            return os << static_cast<std::string>(e);
-        }
+        std::ostream &operator <<(std::ostream &, const Escape &);
     }
 
     using tty::Escape;

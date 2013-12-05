@@ -49,3 +49,8 @@ Escape::operator std::string() const
 
     return os.str();
 }
+
+std::ostream &estd::tty::operator <<(std::ostream &os, const Escape &e)
+{
+            return os << static_cast<std::string>(e);
+}
