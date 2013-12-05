@@ -37,19 +37,8 @@ namespace ex_10_7
     class Highlighter: public Processor
                        // highlight comment
     {
-        public:
-            enum class Color {bold, red, green, blue};
-
-            Highlighter(const Color &c=Color::bold);
-
         private:
-            virtual std::string comment(const std::string &s) const
-                // highlight comment using escape sequences
-            {
-                return _escape + s + "\033[0m";
-            }
-
-            std::string _escape {"\033[1"};
+            virtual std::string comment(const std::string &) const;
     };
 }
 

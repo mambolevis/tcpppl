@@ -20,6 +20,7 @@
 #include "interface/10.7.h"
 
 using std::cerr;
+using std::cout;
 using std::endl;
 using std::ifstream;
 using std::invalid_argument;
@@ -30,14 +31,24 @@ int main(int argc, char *argv[])
 try
 {
     if (2 > argc)
-        throw invalid_argument(string("usage: ") + argv[0] + " input");
+        throw invalid_argument(string("usage: ") + argv[0] + " input [input]");
 
-    ifstream is(argv[1]);
-    if (!is)
-        throw runtime_error(string("failed to open file: ") + argv[1]);
+    // process over each input file
+    for(int i {1}; argc > i; ++i)
+    {
+        cout << "-- file " << argv[i] << endl;
 
-    ex_10_7::Highlighter processor;
-    processor.run(is, std::cout);
+        ifstream is(argv[i]);
+        if (!is)
+        {
+            cerr << "failed to open file " << argv[i] << endl;
+
+            continue;
+        }
+
+        ex_10_7::Highlighter processor;
+        processor.run(is, cout);
+    }
 }
 catch(const std::exception &e)
 {
