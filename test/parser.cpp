@@ -7,10 +7,12 @@
 #include <cctype>
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <string>
 
 using std::cout;
 using std::endl;
+using std::istringstream;
 
 namespace calc
 {
@@ -57,19 +59,28 @@ namespace calc
     class itokenstream
     {
         public:
-            itokenstream(istream &is):
-                _is(is)
+            itokenstream(istream &is=cin):
+                _is(&is)
             {}
+
+            istream &stream() const noexcept { return *_is; }
+            istream &stream(istream &is) noexcept
+            {
+                istream *last_is {_is};
+                _is = &is;
+
+                return *last_is;
+            }
 
             Token get();
             const Token &current() const noexcept { return _current_token; }
 
         private:
-            istream &_is;
+            istream *_is;
             Token _current_token {Kind::end};
     };
 
-    itokenstream its {cin};
+    itokenstream its;
     Value errors {0};
 
     Value error(const string &str)
@@ -176,7 +187,7 @@ namespace calc
 
         do
         {
-            if (!_is.get(ch))
+            if (!_is->get(ch))
                 return _current_token = {Kind::end};
 
         } while(ch != '\n' && isspace(ch));
@@ -202,8 +213,8 @@ namespace calc
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7': case '8': case '9':
             case '.':
-                _is.putback(ch);
-                _is >> _current_token.value;
+                _is->putback(ch);
+                *_is >> _current_token.value;
                 _current_token.kind = Kind::number;
                 return _current_token;
 
@@ -211,10 +222,10 @@ namespace calc
                 if (isalpha(ch))
                 {
                     string name {ch};
-                    while(_is.get(ch) && isalnum(ch))
+                    while(_is->get(ch) && isalnum(ch))
                             name += ch;
 
-                    _is.putback(ch);
+                    _is->putback(ch);
                     return _current_token = {Kind::name, name};
                 }
 
@@ -246,9 +257,22 @@ namespace calc
     }
 }
 
-int main(int, char *[])
+int main(int argc, char *argv[])
 {
-    calc::driver();
+    if (1 < argc)
+    {
+        // note: ASSERT_TRUE(argv[argc] == 0)
+        for(decltype(argc) i {1}; argv[i]; ++i)
+        {
+            istringstream iss{argv[i]};
+            cout << iss.str() << " > ";
+            calc::its.stream(iss);
+
+            calc::driver();
+        }
+    }
+    else
+        calc::driver();
 
     return calc::errors;
 }
