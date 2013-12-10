@@ -10,10 +10,15 @@
 
 CXX = clang++
 
+# Each executable name has a form <prefix>_<name>
+# where _<name> part is equal to the basename of the CPP file
+#
+prefix=tcpl
+
 # Subsystems that have compilable libraries
 #
 subsys = 
-lib = lib/lib_tcpl.so.0.0
+lib = lib/libtcpl.so.0.0
 
 # Get list of all heads, sources and objects. Each source (%.cc) whould have
 # an object file except programs listed in PROGS
@@ -22,21 +27,21 @@ heads  = $(wildcard ./interface/*.h)
 templates = $(wildcard ./interface/*.tcc)
 srcs = $(wildcard ./src/*.cc)
 tests = $(foreach test,$(wildcard ./test/*.cpp),$(addprefix ./bin/test_,$(patsubst ./test/%.cpp,%,${test})))
-progs = $(foreach prog,$(wildcard ./src/*.cpp),$(addprefix ./bin/tcpl_,$(patsubst ./src/%.cpp,%,${prog})))
+progs = $(foreach prog,$(wildcard ./src/*.cpp),$(addprefix ./bin/${prefix}_,$(patsubst ./src/%.cpp,%,${prog})))
 
 objs = $(foreach obj,${srcs},$(addprefix ./obj/,$(patsubst %.cc,%.o,$(notdir ${obj}))))
 
-
 CPPFLAGS += ${debug} -fPIC -pipe -std=c++11 -Wc++11-extensions -Wall -I. -isystem ${GTEST_DIR}/include -pthread -DGTEST_LINKED_AS_SHARED_LIBRARY=1
 LDFLAGS += -L${GTEST_DIR} -lgtest
+
+$(info $(tests))
+$(info $(lib))
 
 # Rules to be always executed: empty ones
 #
 .PHONY: prog
 
 lib: ${lib}
-
-all: test
 
 obj: ${objs}
 
@@ -68,7 +73,7 @@ ${lib}: ${objs}
 
 # Tests
 #
-${tests}: bin/test_%: test/%.cpp ${lib} ${templates}
+${tests}: bin/test_%: test/%.cpp ${lib}
 	@echo "[+] Compiling test $@ ..."
 	$(eval test_name=$(patsubst bin/test_%,%,$@))
 	${CXX} ${CPPFLAGS} -c test/${test_name}.cpp -o ./obj/test_${test_name}.o
@@ -79,11 +84,11 @@ ${tests}: bin/test_%: test/%.cpp ${lib} ${templates}
 
 # Executables
 #
-${progs}: bin/tcpl_%: src/%.cpp ${lib}
+${progs}: bin/${prefix}_%: src/%.cpp ${lib}
 	@echo "[+] Compiling programs $@ ..."
-	$(eval prog_name=$(patsubst bin/tcpl_%,%,$@))
-	${CXX} ${CPPFLAGS} -c src/${prog_name}.cpp -o ./obj/tcpl_${prog_name}.o
-	${CXX} ${LDFLAGS} ${lib} ./obj/tcpl_${prog_name}.o -o $@
+	$(eval prog_name=$(patsubst bin/${prefix}_%,%,$@))
+	${CXX} ${CPPFLAGS} -c src/${prog_name}.cpp -o ./obj/${prefix}_${prog_name}.o
+	${CXX} ${LDFLAGS} ${lib} ./obj/${prefix}_${prog_name}.o -o $@
 	@echo
 
 
@@ -92,10 +97,9 @@ ${progs}: bin/tcpl_%: src/%.cpp ${lib}
 #
 cleanbin:
 ifneq ($(strip ${tests}),)
-	rm -f ./bin/test_*
-	rm -f ./bin/tcpl_*
+	rm -f ./bin/*
 endif
 
 clean: cleanbin
-	rm -f ./obj/*.o
+	rm -f ./obj/*
 	rm -f ./lib/*
