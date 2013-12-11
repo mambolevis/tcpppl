@@ -34,20 +34,19 @@ objs = $(foreach obj,${srcs},$(addprefix ./obj/,$(patsubst %.cc,%.o,$(notdir ${o
 CPPFLAGS += ${debug} -fPIC -pipe -std=c++11 -Wc++11-extensions -Wall -I. -isystem ${GTEST_DIR}/include -pthread -DGTEST_LINKED_AS_SHARED_LIBRARY=1
 LDFLAGS += -L${GTEST_DIR} -lgtest
 
-$(info $(tests))
-$(info $(lib))
-
 # Rules to be always executed: empty ones
 #
 .PHONY: prog
 
+obj: ${objs}
+
 lib: ${lib}
 
-obj: ${objs}
+prog: ${progs}
 
 test: ${tests}
 
-prog: ${progs}
+all: prog test
 
 
 
