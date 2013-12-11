@@ -46,7 +46,11 @@ Token &parser::Itokenstream::get()
     // read next token
 {
     char ch {0};
-    *_is >> ch;
+    do
+    {
+        if (!_is->get(ch))
+            return _current_token = {Kind::end};
+    } while(ch != '\n' && isspace(ch));
 
     switch(ch)
     {
@@ -54,6 +58,10 @@ Token &parser::Itokenstream::get()
             // failed to read char: eof
             _current_token = {Kind::end};
             break;
+
+        case '\n':
+        case ';':
+            return _current_token = {Kind::print};
 
         // numbers
         case '0': case '1': case '2': case '3': case '4':
@@ -66,7 +74,6 @@ Token &parser::Itokenstream::get()
             break;
 
         // special symbols
-        case ';':
         case ',':
         case '(':
         case ')':
@@ -76,12 +83,13 @@ Token &parser::Itokenstream::get()
         default:
             if (isalpha(ch))
             {
+                string name {ch};
+                while(_is->get(ch) && isalpha(ch))
+                   name += ch; 
+
                 _is->putback(ch);
 
-                // by default CIN separates strings by whitespace (!)
-                *_is >> _current_token.name;
-
-                _current_token.kind = Kind::name;
+                _current_token = {Kind::name, name};
             }
             else
             {
