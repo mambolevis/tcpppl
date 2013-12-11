@@ -8,7 +8,13 @@
 
 size_t ex_11_7::strlen(const char *s)
 {
-    return 0;
+    size_t i {0};
+    while(*s)
+    {
+        ++s;
+        ++i;
+    }
+    return i;
 }
 
 size_t ex_11_7::strcpy(const char *from, const char *to)
