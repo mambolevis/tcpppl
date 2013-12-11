@@ -17,7 +17,7 @@ namespace ex_11_7
     size_t strlen(const char *);
 
     // return number of chars copied
-    size_t strcpy(const char * /* from */, const char * /* to */);
+    size_t strcpy(const char * /* from */, char * /* to */);
 
     // compare two strings and return:
     //

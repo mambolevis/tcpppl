@@ -17,9 +17,19 @@ size_t ex_11_7::strlen(const char *s)
     return i;
 }
 
-size_t ex_11_7::strcpy(const char *from, const char *to)
+size_t ex_11_7::strcpy(const char *from, char *to)
 {
-    return 0;
+    size_t i {0};
+    do
+        // copy then check the input char for '\0'
+    {
+        *to++ = *from;
+
+        ++i;
+    }
+    while(*from++);
+
+    return i;
 }
 
 int ex_11_7::strcmp(const char *s1, const char *s2)

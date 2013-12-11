@@ -37,7 +37,7 @@ TEST(StringTest, Copy)
     char buf2[255] {};
 
     EXPECT_EQ(ex_11_7::strcpy(s, buf1),
-              strlen(strcpy(buf2, s)));
+              strlen(strcpy(buf2, s)) + 1);
     EXPECT_STREQ(buf1, buf2);
 }
 
