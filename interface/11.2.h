@@ -7,7 +7,7 @@
 #ifndef EXERCISE_11_2
 #define EXERCISE_11_2
 
-#include <iostream>
+#include <iosfwd>
 #include <map>
 #include <string>
 #include <vector>
@@ -18,17 +18,8 @@ namespace reader
     {
         using value_t = double; // numbers are floating-point
 
-        using Values = std::vector<value_t>;
-        using Table = std::map<std::string, Values>;
-
-        std::ostream &operator <<(std::ostream &, const Values &);
-        std::ostream &operator <<(std::ostream &, const Table &);
-        
-        extern Table table;
-
-        extern int errors;
-
         enum Kind
+            // enumerate all possible tokens
         {
             end,
 
@@ -43,18 +34,33 @@ namespace reader
         };
 
         struct Token
+            // depending on a kind either name or value (or even neither of
+            // the two) is used, e.g.:
+            //
+            //  Kind    Property used
+            //
+            //  end     -
+            //
+            //  name    name
+            //  number  value
+            //
+            //  print   -
+            //  assign  -
+            //  lp      -
+            //  rp      -
         {
             Kind kind;
             std::string name;
             value_t value;
         };
 
-        value_t error(const std::string &);
-
         class Itokenstream
+            // low-level stream parser, e.g. token reader
         {
             public:
-                Itokenstream(std::istream &);
+                Itokenstream(std::istream &is):
+                    _is(&is)
+                {}
 
                 // get stream
                 std::istream &stream() const noexcept { return *_is; }
@@ -62,21 +68,47 @@ namespace reader
                 // set new stream and return old one
                 std::istream &stream(std::istream &) noexcept;
 
+                // read next token
                 Token &get();
-                Token &current() noexcept { return _current; }
+
+                // access current token
+                Token &current() noexcept { return _current_token; }
 
             private:
                 std::istream *_is;
-                Token _current {Kind::end};
+                Token _current_token {Kind::end};
         };
 
-        extern Itokenstream itokenstream;
+        // print error message and count errors
+        value_t error(const std::string &);
 
+        // an expression is:
+        //
+        //      (primary)
+        //
+        void expression(const bool &get);
+
+        // read primary expression
         value_t primary(const bool &get);
 
-        void driver();
+        void driver();  // application entry point
+
+        // the same name may be defined several times: keep list of values
+        // in a map
+        using Values = std::vector<value_t>;
+        using Table = std::map<std::string, Values>;
+        
+        // tokenizer is automatically initialized with CIN
+        extern Itokenstream itokenstream;
+        extern Table table; // read values
+        extern int errors; // count number of errors occured
+
+        // make table printable
+        std::ostream &operator <<(std::ostream &, const Values &);
+        std::ostream &operator <<(std::ostream &, const Table &);
     }
 
+    // make application main parts easily accessible
     using parser::itokenstream;
     using parser::driver;
 }
