@@ -16,12 +16,14 @@
 
 using namespace std;
 
+// Concatenate two strings and return result
 shared_ptr<const char> cat(const char *, const char *);
 
 const char *str1;
 const char *str2;
 
 TEST(CatTest, Concatenation)
+    // compare custom CAT with c-string concatenation functions
 {
     shared_ptr<const char> result {cat(str1, str2)};
 
@@ -35,6 +37,8 @@ TEST(CatTest, Concatenation)
 }
 
 int main(int argc, char *argv[])
+    // the application may run by deault or with command line arguments. In
+    // the latter case the two input strings will be cancatenated.
 {
     if (1 == argc)
     {
@@ -59,5 +63,18 @@ int main(int argc, char *argv[])
 
 shared_ptr<const char> cat(const char *s1, const char *s2)
 {
-    return shared_ptr<char>{new char[1] {'\0'}};
+    shared_ptr<char> str{new char[strlen(s1) + strlen(s2) + 1]};
+
+    char *p {str.get()};
+
+    // copy each string into str
+    for(const char *s:{s1, s2})
+        // copy the entire string but the end symbol
+        for(; *s; ++p, ++s)
+            *p = *s;
+
+    // mark the end of the string
+    *p = '\0';
+
+    return str;
 }
