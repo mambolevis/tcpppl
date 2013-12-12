@@ -141,6 +141,11 @@ namespace ex_11_11
             // determine whether calculator should continue running
             virtual bool valid(); 
 
+            // output result
+            virtual void print(const value_type &);
+
+            virtual void prompt() {};
+
             int _errors {0}; // count number of errors
 
             std::map<std::string, value_type> _table; // constants

@@ -121,6 +121,8 @@ void Calculator::run()
 {
     while(valid())
     {
+        prompt();
+
         _its->get();
 
         if (Kind::end == _its->current().kind)
@@ -129,7 +131,7 @@ void Calculator::run()
         if (Kind::print == _its->current().kind)
             continue;
 
-        std::cout << expression(false) << endl;
+        print(expression(false));
     }
 }
 
@@ -241,4 +243,9 @@ const int &Calculator::errors() const noexcept
 bool Calculator::valid()
 {
     return not _errors;
+}
+
+void Calculator::print(const value_type &value)
+{
+    std::cout << value << endl;
 }
