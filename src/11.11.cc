@@ -219,5 +219,7 @@ Calculator::value_type Calculator::primary(const bool &get_next)
 
 void Calculator::error(const std::string &message)
 {
+    ++_errors;
+
     std::cerr << message << endl;
 }
