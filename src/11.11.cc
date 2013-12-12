@@ -233,6 +233,11 @@ void Calculator::error(const std::string &message)
     std::cerr << message << endl;
 }
 
+const int &Calculator::errors() const noexcept
+{
+    return _errors;
+}
+
 bool Calculator::valid()
 {
     return not _errors;

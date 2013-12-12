@@ -131,8 +131,11 @@ namespace ex_11_11
             //      (expression)
             value_type primary(const bool &);
 
+        protected:
             // count number of errors and print an error message
-            void error(const std::string &);
+            virtual void error(const std::string &);
+
+            const int &errors() const noexcept; // return # of errors
 
         private:
             // determine whether calculator should continue running
