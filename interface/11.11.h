@@ -23,7 +23,6 @@
 //      primary
 //      term * primary
 //      term / primary
-//      term % primary
 //
 //  primary:
 //      number
@@ -45,9 +44,10 @@ namespace ex_11_11
 {
     struct Token
     {
-        using value_type = double;
+        using value_type = double; // all numbers are floating-point
 
         enum class Kind : char
+            // supported token types
         {
             end,
             print = ';',
@@ -73,6 +73,7 @@ namespace ex_11_11
     };
 
     class Itokenstream
+        // input stream parser: extract tokens
     {
         public:
             Itokenstream(std::istream &);
@@ -80,37 +81,63 @@ namespace ex_11_11
             std::istream &stream() const noexcept;  // get stream
             void stream(std::istream &) noexcept; // set new stream
 
-            Token &get();
-            const Token &current() const noexcept;
+            Token &get();   // read next token from istream
+            const Token &current() const noexcept;  // access last token
 
         private:
             using Kind = Token::Kind;
 
             std::istream *_is;
 
-            Token _current {Kind::end};
+            Token _current {Kind::end}; // last read token
     };
 
     class Calculator
+        // Calculator backend which combines tokens into primary expressions,
+        // terms, expressions and expression lists.
     {
         public:
             using value_type = Token::value_type;
 
-            Calculator();
+            Calculator(); // use CIN for Tokenizer by default
 
+            // driver:
+            //      end
+            //      expression_list end
+            //
+            //  expression_list:
+            //      expression print
+            //      expression print expression_list
             void run(); // driver
 
+            // expression:
+            //      term
+            //      term + term
+            //      term - term
             value_type expression(const bool &);
+
+            // term:
+            //      primary
+            //      primary * primary
+            //      primary / primary
             value_type term(const bool &);
+
+            // primary:
+            //      number
+            //      name
+            //      name = expression
+            //      -primary
+            //      (expression)
             value_type primary(const bool &);
 
+            // count number of errors and print an error message
             void error(const std::string &);
 
         private:
             int _errors {0}; // count number of errors
 
-            std::map<std::string, value_type> _table;
-            std::shared_ptr<Itokenstream> _its;
+            std::map<std::string, value_type> _table; // constants
+            std::shared_ptr<Itokenstream> _its; // input stream parser
     };
 }
 

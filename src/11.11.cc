@@ -38,6 +38,7 @@ Token &Itokenstream::get()
 {
     char ch {0};
     do
+        // skip whitespaces
     {
         if (!_is->get(ch))
             break;
@@ -45,10 +46,11 @@ Token &Itokenstream::get()
 
     switch(ch)
     {
-        case 0:
+        case 0: // failed to read istream
             _current.kind = {Kind::end};
             break;
 
+        // either white space of semicolon are signals for print command
         case '\n':
         case ';':
             _current = {Kind::print};
@@ -74,14 +76,16 @@ Token &Itokenstream::get()
 
         default:
             if (isalpha(ch))
+                // customized name read allows for next token follow the name
+                // without space
             {
-                string name {ch};
+                _current.name = {ch};
                 while(_is->get(ch) && isalpha(ch))
-                    name += ch;
+                    _current.name += ch;
 
                 _is->putback(ch);
 
-                _current = {Kind::name, name};
+                _current.kind = Kind::name;
             }
             else
             {
@@ -106,9 +110,14 @@ const Token &Itokenstream::current() const noexcept
 Calculator::Calculator():
     _its{new Itokenstream{std::cin}}
 {
+    // add several constants
+    //
+    _table["pi"] = 3.14;
+    _table["e"] = 2.71;
 }
 
 void Calculator::run()
+    // driver continuously process input
 {
     while(not _errors)
     {
@@ -170,9 +179,9 @@ Calculator::value_type Calculator::term(const bool &get)
     }
 }
 
-Calculator::value_type Calculator::primary(const bool &get_next)
+Calculator::value_type Calculator::primary(const bool &get)
 {
-    if (get_next)
+    if (get)
         _its->get();
 
     switch(_its->current().kind)
