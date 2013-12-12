@@ -119,7 +119,7 @@ Calculator::Calculator():
 void Calculator::run()
     // driver continuously process input
 {
-    while(not _errors)
+    while(valid())
     {
         _its->get();
 
@@ -231,4 +231,9 @@ void Calculator::error(const std::string &message)
     ++_errors;
 
     std::cerr << message << endl;
+}
+
+bool Calculator::valid()
+{
+    return not _errors;
 }

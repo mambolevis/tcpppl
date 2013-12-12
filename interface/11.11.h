@@ -100,6 +100,7 @@ namespace ex_11_11
             using value_type = Token::value_type;
 
             Calculator(); // use CIN for Tokenizer by default
+            virtual ~Calculator() {}
 
             // driver:
             //      end
@@ -134,6 +135,9 @@ namespace ex_11_11
             void error(const std::string &);
 
         private:
+            // determine whether calculator should continue running
+            virtual bool valid(); 
+
             int _errors {0}; // count number of errors
 
             std::map<std::string, value_type> _table; // constants
