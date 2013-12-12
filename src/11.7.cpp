@@ -14,6 +14,7 @@
 //      Then compare your functions with the standard library versions as
 //      declared in <cstring> (<string.h>) and as specified in §43.4.
 
+#include <cmath>
 #include <cstring>
 #include <iostream>
 
@@ -49,9 +50,9 @@ TEST(StringTest, Compare)
     const char *s4 {"hollo"};
 
     EXPECT_EQ(ex_11_7::strcmp(s1, s1), strcmp(s1, s1));
-    EXPECT_EQ(ex_11_7::strcmp(s1, s2), strcmp(s1, s2));
-    EXPECT_EQ(ex_11_7::strcmp(s1, s3), strcmp(s1, s3));
-    EXPECT_EQ(ex_11_7::strcmp(s1, s4), strcmp(s1, s4));
+    EXPECT_EQ(ex_11_7::strcmp(s1, s2), strcmp(s1, s2) / abs(strcmp(s1, s2)));
+    EXPECT_EQ(ex_11_7::strcmp(s1, s3), strcmp(s1, s3) / abs(strcmp(s1, s3)));
+    EXPECT_EQ(ex_11_7::strcmp(s1, s4), strcmp(s1, s4) / abs(strcmp(s1, s4)));
 }
 
 int main(int argc, char *argv[])

@@ -21,9 +21,11 @@ namespace ex_11_7
 
     // compare two strings and return:
     //
-    //  -1      if str1 < str2
+    //  -N      if str1 < str2
     //  0       if str1 == str2
-    //  1       if str1 > str2
+    //  N       if str1 > str2
+    //
+    //  where N is the first non-matching char
     int strcmp(const char * /* str1 */, const char * /* str2 */);
 }
 
