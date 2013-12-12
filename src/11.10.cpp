@@ -16,10 +16,10 @@
 
 using namespace std;
 
-const char *str;
+char *str;
 
 // Concatenate two strings and return result
-const char *rev(const char *);
+char *rev(char *);
 
 TEST(RevTest, Reversion)
     // compare custom CAT with c-string concatenation functions
@@ -46,8 +46,9 @@ int main(int argc, char *argv[])
     // the application may run by deault or with command line arguments. In
     // the latter case the two input strings will be cancatenated.
 {
+    char input[] {"Hello World!"};
     if (1 == argc)
-        str = "Hello World!";
+        str = input;
     else if (2 == argc)
         str = argv[1];
     else
@@ -61,7 +62,17 @@ int main(int argc, char *argv[])
     return RUN_ALL_TESTS();
 }
 
-const char *rev(const char *s)
+char *rev(char *s)
 {
+    for(char *l {s},
+             *r {s + strlen(s) - 1};
+        l < r;
+        ++l, --r)
+    {
+        char tmp = *l;
+        *l = *r;
+        *r = tmp;
+    }
+
     return s;
 }
