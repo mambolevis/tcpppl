@@ -10,6 +10,7 @@
 
 using std::endl;
 using std::istream;
+using std::string;
 
 using Token = ex_11_11::Token;
 using Kind = Token::Kind;
@@ -36,15 +37,23 @@ Token &Itokenstream::get()
     // read next token
 {
     char ch {0};
-    *_is >> ch;
+    do
+    {
+        if (!_is->get(ch))
+            break;
+    } while(ch != '\n' && isspace(ch));
 
     switch(ch)
     {
         case 0:
-            _current.kind = Kind::print;
+            _current.kind = {Kind::end};
             break;
 
+        case '\n':
         case ';':
+            _current = {Kind::print};
+            break;
+
         case '+':
         case '-':
         case '*':
@@ -52,7 +61,7 @@ Token &Itokenstream::get()
         case '=':
         case '(':
         case ')':
-            _current.kind = static_cast<Kind>(ch);
+            _current = {static_cast<Kind>(ch)};
             break;
 
         case '0': case '1': case '2': case '3': case '4':
@@ -66,15 +75,20 @@ Token &Itokenstream::get()
         default:
             if (isalpha(ch))
             {
+                string name {ch};
+                while(_is->get(ch) && isalpha(ch))
+                    name += ch;
+
                 _is->putback(ch);
-                *_is >> _current.name;
-                _current.kind = Kind::name;
+
+                _current = {Kind::name, name};
             }
             else
             {
                 // failed input
                 _current.kind = Kind::end;
             }
+
             break;
     }
 
