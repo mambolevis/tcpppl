@@ -65,16 +65,14 @@ shared_ptr<const char> cat(const char *s1, const char *s2)
 {
     shared_ptr<char> str{new char[strlen(s1) + strlen(s2) + 1]};
 
-    char *p {str.get()};
-
     // copy each string into str
+    char *p {str.get()};
     for(const char *s:{s1, s2})
-        // copy the entire string but the end symbol
-        for(; *s; ++p, ++s)
-            *p = *s;
+    {
+        while((*p++ = *s++));   // use paranthesis to silence warning
 
-    // mark the end of the string
-    *p = '\0';
+        --p; // eat first strings terminating symbol
+    }
 
     return str;
 }
