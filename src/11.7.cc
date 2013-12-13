@@ -9,25 +9,15 @@
 size_t ex_11_7::strlen(const char *s)
 {
     size_t i {0};
-    while(*s)
-    {
-        ++s;
-        ++i;
-    }
+    while(s[i]) ++i;
+
     return i;
 }
 
 size_t ex_11_7::strcpy(const char *from, char *to)
 {
     size_t i {0};
-    do
-        // copy then check the input char for '\0'
-    {
-        *to++ = *from;
-
-        ++i;
-    }
-    while(*from++);
+    while((*to++ = *from++)) ++i;   // parentheses silence warning
 
     return i;
 }
