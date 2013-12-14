@@ -53,7 +53,8 @@ int main(int, char *[])
     for(int *p {numbers}, size {sizeof(numbers) / sizeof(int)};
             size;
             --size, ++p)
-        numbers_copy.push_back(*p);
+        if (*p && not (*p % 2))
+            numbers_copy.push_back(*p);
 
     cout << "numbers: " << Array{numbers, sizeof(numbers) / sizeof(int)} << endl;
     cout << "   copy: " << numbers_copy << endl;
