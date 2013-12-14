@@ -27,6 +27,8 @@ namespace tools
                 using system_clock = std::chrono::system_clock;
 
             public:
+                using precision = D;
+
                 // automatically start timer
                 //
                 Timer():
