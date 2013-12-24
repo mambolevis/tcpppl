@@ -8,6 +8,8 @@
 #define TOOLS
 
 #include <numeric>
+#include <string>
+#include <vector>
 
 namespace tools
 {
@@ -17,6 +19,9 @@ namespace tools
         {
             return std::accumulate(from, from + number_of_elements, init);
         }
+
+    // put all arguments but the name of executable into a vector 
+    std::vector<std::string> arguments(int argc, char *argv[]);
 }
 
 #endif

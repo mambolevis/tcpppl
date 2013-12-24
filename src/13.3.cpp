@@ -11,25 +11,16 @@
 
 #include <cctype>
 #include <iostream>
-#include <vector>
+
+#include "interface/tools.h"
 
 using namespace std;
 
-vector<const char *> arguments(int argc, char *argv[])
-    // put all arguments but the name of executable into a vector of strings
-{
-    vector<const char *> args;
-    for(size_t i{1}; argc > i; ++i)
-    {
-        argv[i][0] = toupper(argv[i][0]);
-        args.push_back(argv[i]);
-    }
-
-    return args;
-}
-
 int main(int argc, char *argv[])
 {
-    for(const char *arg:arguments(argc, argv))
+    for(string &arg:tools::arguments(argc, argv))
+    {
+        arg[0] = toupper(arg[0]);
         cout << "Hello, " << arg << "!" << endl;
+    }
 }
