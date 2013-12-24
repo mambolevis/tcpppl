@@ -18,6 +18,15 @@ int main(int argc, char *[])
     // one way to declare a function inside another one is to use lambda
     auto f = [](const int &x) -> int { return x * 3; };
 
-    cout << f(4) << endl;
-    cout << ::f(4) << endl;
+    // another way is to use a callable object, e.g. functor
+    struct Functor
+    {
+        int operator()(const int &x) { return x * 5; };
+    };
+
+    Functor functor;
+
+    cout << "    ::f(4) = " << ::f(4) << endl;
+    cout << "      f(4) = " << f(4) << endl;
+    cout << "functor(4) = " << functor(4) << endl;
 }
