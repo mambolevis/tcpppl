@@ -17,10 +17,11 @@ namespace ex_13_8
 
     // always work with smart pointers
     using node_pointer = std::shared_ptr<Tnode>;
+    using str_pointer = std::shared_ptr<char>;
 
     struct Tnode
     {
-        std::string word;
+        str_pointer word;
         int count;
 
         node_pointer left;

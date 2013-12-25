@@ -22,11 +22,11 @@ ostream &ex_13_8::operator <<(ostream &os, const Tnode &node)
         "  p:" << setw(14) << left << &node << 
         "  l:" << setw(14) << left << node.left.get() <<
         "  r:" << setw(14) << left << node.right.get() << 
-        "  '" << node.word << "'";
+        "  '" << node.word.get() << "'";
 }
 
 void ex_13_8::swap(node_pointer l, node_pointer r) noexcept
-    // swap is easy b/c of C++ string and int cheap copy
+    // swap is easy b/c of cheap copy
     //
     // note: the logic is very complicated if one attempts to manipulate
     //       links, e.g. pointers to left and right node. It is better to
@@ -45,7 +45,7 @@ void ex_13_8::swap(node_pointer l, node_pointer r) noexcept
 int ex_13_8::WordCompare::operator()(const node_pointer l,
                                      const node_pointer r) const
 {
-    return strcmp(l->word.c_str(), r->word.c_str());
+    return strcmp(l->word.get(), r->word.get());
 }
 
 int ex_13_8::CountCompare::operator()(const node_pointer l,
@@ -56,7 +56,12 @@ int ex_13_8::CountCompare::operator()(const node_pointer l,
 
 void Tree::add(const std::string &word)
 {
-    node_pointer node{new Tnode{word, 1}};
+    node_pointer node{new Tnode{}};
+    node->word.reset(new char[word.size() + 1],
+                     std::default_delete<char[]>());
+    strcpy(node->word.get(), word.c_str());
+
+    node->count = 1;
 
     if (_back)
     {

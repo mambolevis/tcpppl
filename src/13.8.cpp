@@ -48,14 +48,6 @@ int main(int argc, char *argv[])
 
     cout << tree << endl;
 
-    cout << "-- swap(5, 10)" << endl;
-    tree.swap(5, 10);
-    cout << tree << endl;
-
-    cout << "-- swap(6, 7)" << endl;
-    tree.swap(6, 7);
-    cout << tree << endl;
-
     cout << "-- swap(1, 3)" << endl;
     tree.swap(1, 3);
     cout << tree << endl;
