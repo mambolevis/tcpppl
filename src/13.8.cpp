@@ -24,11 +24,18 @@
 #include <iostream>
 
 #include "interface/13.8.h"
+#include "interface/tools.h"
 
 using namespace std;
 
 using ex_13_8::Tree;
 
-int main(int, char *[])
+int main(int argc, char *argv[])
 {
+    Tree tree;
+    for(const auto &w:tools::arguments(argc, argv))
+        tree.add(w);
+
+    if (not tree.empty())
+        cout << tree << endl;
 }
