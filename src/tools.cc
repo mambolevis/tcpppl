@@ -6,9 +6,18 @@
 
 #include "interface/tools.h"
 
-std::vector<std::string> tools::arguments(int argc, char *argv[])
+tools::Args tools::arguments(int argc, char *argv[])
 {
-    std::vector<std::string> args;
+    tools::Args args;
+    for(int i {1}; argc > i; ++i)
+        args.push_back(argv[i]);
+
+    return args;
+}
+
+tools::CArgs tools::carguments(int argc, char *argv[])
+{
+    tools::CArgs args;
     for(int i {1}; argc > i; ++i)
         args.push_back(argv[i]);
 

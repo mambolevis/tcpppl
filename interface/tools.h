@@ -21,7 +21,11 @@ namespace tools
         }
 
     // put all arguments but the name of executable into a vector 
-    std::vector<std::string> arguments(int argc, char *argv[]);
+    using Args = std::vector<std::string>;
+    using CArgs = std::vector<const char *>;
+
+    Args arguments(int argc, char *argv[]);
+    CArgs carguments(int argc, char *argv[]);
 }
 
 #endif
