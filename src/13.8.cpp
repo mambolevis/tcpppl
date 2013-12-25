@@ -28,11 +28,11 @@
 
 using namespace std;
 
-using ex_13_8::Tree;
-
 int main(int argc, char *argv[])
+    // fill tree with either arguments or default list of words.
+    // print the tree, swap several words, custom sort tree and print.
 {
-    Tree tree;
+    ex_13_8::Tree tree;
     for(const auto &w:tools::arguments(argc, argv))
         tree.add(w);
 
@@ -54,5 +54,13 @@ int main(int argc, char *argv[])
 
     cout << "-- swap(2, 12)" << endl;
     tree.swap(2, 12);
+    cout << tree << endl;
+
+    cout << "-- word sort" << endl;
+    tree.sort(ex_13_8::WordCompare{});
+    cout << tree << endl;
+
+    cout << "-- count sort" << endl;
+    tree.sort(ex_13_8::CountCompare{});
     cout << tree << endl;
 }

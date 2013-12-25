@@ -13,13 +13,14 @@
 
 namespace ex_13_8
 {
-    struct Tnode;
-
     // always work with smart pointers
-    using node_pointer = std::shared_ptr<Tnode>;
+    using node_pointer = std::shared_ptr<struct Tnode>;
     using str_pointer = std::shared_ptr<char>;
 
     struct Tnode
+        // Node keeps track of neighbours, e.g. left and right nodes,
+        // and data. Ideally, data can be put into a separate container.
+        // In this case node would keep only a pointer to that container.
     {
         str_pointer word;
         int count;
@@ -32,27 +33,33 @@ namespace ex_13_8
     std::ostream &operator <<(std::ostream &, const Tnode &);
 
     // swap two nodes
-    void swap(node_pointer, node_pointer) noexcept;
+    void swap(Tnode &, Tnode &) noexcept;
 
     struct Compare
+        // interface for a functor to compare two nodes. It should return:
+        //
+        //  -1  if left < right
+        //   1  if left > right
+        //   0  otherwise
     {
-        virtual int operator()(const node_pointer left,
-                               const node_pointer right) const = 0;
+        virtual int operator()(const Tnode &left,
+                               const Tnode &right) const = 0;
     };
 
-    struct WordCompare
+    struct WordCompare : public Compare
     {
-        virtual int operator()(const node_pointer left,
-                               const node_pointer right) const;
+        virtual int operator()(const Tnode &left,
+                               const Tnode &right) const;
     };
 
-    struct CountCompare
+    struct CountCompare : public Compare
     {
-        virtual int operator()(const node_pointer left,
-                               const node_pointer right) const;
+        virtual int operator()(const Tnode &left,
+                               const Tnode &right) const;
     };
 
     class Iterator
+        // iterator can be only created by Tree
     {
         public:
             inline Iterator &operator ++()
@@ -103,23 +110,35 @@ namespace ex_13_8
     class Tree
     {
         public:
+            // add a new word: the value will be copied
             void add(const std::string &);
+
+            // print a tree
             void print(std::ostream &) const;
+
+            // user defined sort
             void sort(const Compare &compare);
 
-            void swap(const decltype(Tnode::count),
-                      const decltype(Tnode::count));
+            // swap two elements with counts
+            void swap(const decltype(Tnode::count) &,
+                      const decltype(Tnode::count) &);
 
-            inline bool empty() const noexcept { return not _front.get(); }
+            // check if tree is empty
+            inline bool empty() const noexcept { return not _size; }
 
-            Iterator begin() const { return Iterator{_front}; }
-            Iterator end() const { return Iterator{nullptr}; }
+            inline Iterator begin() const { return Iterator{_front}; }
+            inline Iterator end() const { return Iterator{nullptr}; }
+
+            inline size_t size() const noexcept { return _size; }
 
         private:
             node_pointer _front {nullptr};
             node_pointer _back {nullptr};
+
+            size_t _size {0};
     };
 
+    // Tree nice print
     std::ostream &operator <<(std::ostream &, const Tree &);
 }
 
