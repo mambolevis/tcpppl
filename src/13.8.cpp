@@ -36,6 +36,31 @@ int main(int argc, char *argv[])
     for(const auto &w:tools::arguments(argc, argv))
         tree.add(w);
 
-    if (not tree.empty())
-        cout << tree << endl;
+    if (tree.empty())
+    {
+        cout << "no words are given; using default array" << endl;
+
+        // use default list of words
+        for(const auto &w:{"Write", "a", "function", "for", "entering", "new",
+                           "words", "into", "a", "tree", "of", "Tnodes"})
+            tree.add(w);
+    }
+
+    cout << tree << endl;
+
+    cout << "-- swap(5, 10)" << endl;
+    tree.swap(5, 10);
+    cout << tree << endl;
+
+    cout << "-- swap(6, 7)" << endl;
+    tree.swap(6, 7);
+    cout << tree << endl;
+
+    cout << "-- swap(1, 3)" << endl;
+    tree.swap(1, 3);
+    cout << tree << endl;
+
+    cout << "-- swap(2, 12)" << endl;
+    tree.swap(2, 12);
+    cout << tree << endl;
 }

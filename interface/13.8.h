@@ -14,6 +14,8 @@
 namespace ex_13_8
 {
     struct Tnode;
+
+    // always work with smart pointers
     using node_pointer = std::shared_ptr<Tnode>;
 
     struct Tnode
@@ -25,75 +27,87 @@ namespace ex_13_8
         node_pointer right;
     };
 
+    // nice print
     std::ostream &operator <<(std::ostream &, const Tnode &);
 
-    void swap(Tnode *, Tnode *) noexcept;
+    // swap two nodes
+    void swap(node_pointer, node_pointer) noexcept;
 
     struct Compare
     {
-        virtual int operator()(const Tnode *left,
-                               const Tnode *right) const = 0;
+        virtual int operator()(const node_pointer left,
+                               const node_pointer right) const = 0;
     };
 
     struct WordCompare
     {
-        virtual int operator()(const Tnode *left,
-                               const Tnode *right) const;
+        virtual int operator()(const node_pointer left,
+                               const node_pointer right) const;
     };
 
     struct CountCompare
     {
-        virtual int operator()(const Tnode *left,
-                               const Tnode *right) const;
+        virtual int operator()(const node_pointer left,
+                               const node_pointer right) const;
+    };
+
+    class Iterator
+    {
+        public:
+            inline Iterator &operator ++()
+            { 
+                if (_node)
+                    _node = _node->right;
+                else
+                    _node.reset();
+
+                return *this;
+            }
+
+            inline Iterator &operator --()
+            {
+                if (_node)
+                    _node = _node->left;
+                else
+                    _node.reset();
+
+                return *this;
+            }
+
+            inline Tnode &operator *() noexcept { return *_node; }
+
+            inline node_pointer operator ->() noexcept
+            { 
+                return _node;
+            }
+
+            inline bool operator ==(const Iterator &iter)
+            {
+                return _node == iter._node;
+            }
+
+            inline bool operator !=(const Iterator &iter)
+            {
+                return _node != iter._node;
+            }
+
+        private:
+            Iterator(node_pointer node): _node(node) {}
+
+            friend class Tree;
+
+            node_pointer _node;
     };
 
     class Tree
     {
         public:
-            class Iterator
-            {
-                public:
-                    inline Iterator &operator ++()
-                    { 
-                        if (_node)
-                            _node = _node->right;
-                        else
-                            _node.reset();
-
-                        return *this;
-                    }
-
-                    inline Iterator &operator --()
-                    {
-                        if (_node)
-                            _node = _node->left;
-                        else
-                            _node.reset();
-
-                        return *this;
-                    }
-
-                    inline Tnode &operator *() noexcept { return *_node; }
-                    inline bool operator ==(const Iterator &iter)
-                    {
-                        return _node == iter._node;
-                    }
-                    inline bool operator !=(const Iterator &iter)
-                    {
-                        return _node != iter._node;
-                    }
-
-                private:
-                    Iterator(node_pointer node): _node(node) {}
-
-                    friend class Tree;
-
-                    node_pointer _node;
-            };
-
             void add(const std::string &);
             void print(std::ostream &) const;
             void sort(const Compare &compare);
+
+            void swap(const decltype(Tnode::count),
+                      const decltype(Tnode::count));
 
             inline bool empty() const noexcept { return not _front.get(); }
 
