@@ -11,7 +11,10 @@
 
 namespace ex_9_4
 {
-    enum class Month : unsigned char
+    using Day = int;
+    using Year = int;
+
+    enum class Month : char
     {
         jan, feb,
         mar, apr, may,
@@ -48,9 +51,9 @@ namespace ex_9_4
     struct Date
         // Do not define constructor to keep Date POD, aka Plain Old Data
     {
-        short year;
+        Year year;
         Month month;
-        unsigned char day;
+        Day day;
     };
 
     // supported formats
@@ -68,7 +71,10 @@ namespace ex_9_4
     std::ostream &operator <<(std::ostream &os, const Date &);
 
     bool operator ==(const Date &, const Date &);
-    bool operator !=(const Date &d1, const Date &d2) { return !(d1 == d2); }
+    inline bool operator !=(const Date &d1, const Date &d2)
+    {
+        return not (d1 == d2);
+    }
 
     namespace unit_test
     {

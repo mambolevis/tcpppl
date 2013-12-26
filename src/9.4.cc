@@ -103,7 +103,7 @@ std::istream &ex_9_4::operator >>(std::istream &is, Date &d)
         // process year
         std::istringstream sis(matches[4]);
 
-        short year;
+        Year year;
         sis >> year;
         if (1970 > year || 2100 < year)
             throw runtime_error("year is out of range");
@@ -119,7 +119,7 @@ std::istream &ex_9_4::operator >>(std::istream &is, Date &d)
         sis.clear();
         sis.str(matches[1]);
 
-        int day;
+        Day day;
         sis >> day;
         if (31 < day || 1 > day)
             throw runtime_error("day is out of range");
@@ -155,7 +155,7 @@ std::istream &ex_9_4::operator >>(std::istream &is, Date &d)
                 throw runtime_error("unsupported month");
         }
 
-        d = Date{year, month, static_cast<unsigned char>(day)};
+        d = Date{year, month, day};
         value.clear();
     }
 
