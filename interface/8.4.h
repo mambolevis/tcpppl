@@ -42,9 +42,9 @@ namespace ex_8_4
 
             using tools::cast;
 
-            std::default_random_engine e{
-                std::chrono::system_clock::now().time_since_epoch().count()};
-            std::uniform_int_distribution<int> d{0, list.size() - 1};
+            std::default_random_engine e(
+                std::chrono::system_clock::now().time_since_epoch().count());
+            std::uniform_int_distribution<int> d (0, list.size() - 1);
             auto index = std::bind(d, e);
 
             for(int i {0}; 10 > i; ++i)
@@ -55,7 +55,7 @@ namespace ex_8_4
                 const T *p1 = &*list.begin() + i1;
                 const T *p2 = &*list.begin() + i2;
 
-                cout << '[' << i1 << "]-[" << i2 << "] == " <<
+                cout << '[' << i1 << "]:[" << i2 << "] == " <<
                     cast(p1) << " - " << cast(p2) <<
                     " = " << std::abs(p1 - p2) << endl;
             }
